@@ -1,0 +1,19 @@
+<div class="toolbar">
+  <button type="button" (click)="backToMain()">Back</button>
+  <h2>Vulnerability Cards List</h2>
+  <span class="count">{{ cards.length }} cards</span>
+</div>
+
+<cdk-virtual-scroll-viewport
+  autosize
+  minBufferPx="600"
+  maxBufferPx="900"
+  class="card-viewport"
+>
+  <app-vuln-card
+    *cdkVirtualFor="let card of cards; trackBy: trackById"
+    [data]="card"
+    [expanded]="isExpanded(card.id)"
+    (toggle)="setExpanded(card.id, $event)"
+  />
+</cdk-virtual-scroll-viewport>
