@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Vulnerability severity palette. Use these variables for any
+   severity-related styling. */
+:root {
+  --cb-color-vulnerability-low: #0f93bb;
+  --cb-color-vulnerability-medium: #f3bb2d;
+  --cb-color-vulnerability-high: #e28722;
+  --cb-color-vulnerability-critical: #d9534f;
+  --cb-color-vulnerability-malicious: black;
+  --cb-color-vulnerability-na: #949494;
+
+  --cb-color-vulnerability-bg-fade-low: #e5f9ff;
+  --cb-color-vulnerability-bg-fade-medium: #fff9e9;
+  --cb-color-vulnerability-bg-fade-high: #fff0df;
+  --cb-color-vulnerability-bg-fade-critical: #f9eaea;
+}
+
+body {
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #58666e;
+}
