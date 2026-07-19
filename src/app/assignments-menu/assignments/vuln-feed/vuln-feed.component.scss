@@ -1,0 +1,144 @@
+h2 {
+  text-align: center;
+}
+
+.feed-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.feed-search {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+
+  &__input {
+    width: 100%;
+    max-width: 900px;
+    padding: 8px 12px;
+    border: 1px solid #dee5e7;
+    border-radius: 4px;
+    font-size: 14px;
+
+    &:focus {
+      outline: none;
+      border-color: #23b7e5;
+    }
+  }
+}
+
+.feed-stats {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid var(--severity-color);
+    border-left: 6px solid var(--severity-color);
+    border-radius: 4px;
+    font-size: 13px;
+
+    .stat-count {
+      font-weight: 700;
+    }
+  }
+}
+
+.feed-error {
+  margin: 0 auto 12px;
+  max-width: 900px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--cb-color-vulnerability-bg-fade-critical);
+  color: var(--cb-color-vulnerability-critical);
+  font-size: 13px;
+}
+
+.feed-loading,
+.feed-empty {
+  text-align: center;
+  color: #58666e;
+}
+
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 900px;
+  margin: 0 auto;
+
+  .vuln-row {
+    display: flex;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid #dee5e7;
+    border-radius: 4px;
+    background: #fff;
+
+    .severity-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .vuln-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .vuln-top-line {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+
+      .vuln-id {
+        font-weight: 700;
+      }
+
+      .cvss-pill {
+        padding: 1px 8px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 12px;
+      }
+
+      .epss-pill {
+        padding: 1px 8px;
+        border-radius: 10px;
+        border: 1px solid #23b7e5;
+        color: #23b7e5;
+        font-size: 12px;
+      }
+
+      .vuln-component,
+      .vuln-published {
+        color: #58666e;
+      }
+    }
+
+    .vuln-summary {
+      margin: 4px 0 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #58666e;
+      font-size: 13px;
+    }
+  }
+}

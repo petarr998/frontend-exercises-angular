@@ -1,0 +1,81 @@
+<button (click)="backToMain()">
+    Back
+</button>
+<h2>Vulnerability Feed (NgRx)</h2>
+
+<div class="feed-controls">
+    <label>
+        Severity:
+        <select (change)="onSeverityFilterChange($any($event.target).value)">
+            <option value="all">All</option>
+            @for (option of severityOptions; track option.key) {
+            <option [value]="option.key">{{ option.title }}</option>
+            }
+        </select>
+    </label>
+
+    <button (click)="toggleSortOrder()">
+        Sort by CVSS {{ sortOrder() === 'cvss-desc' ? '▼' : '▲' }}
+    </button>
+
+    <label class="simulate-error-toggle">
+        <input type="checkbox" [checked]="vulnFeedService.simulateError" (change)="toggleSimulateError()" />
+        Simulate API error
+    </label>
+
+    <button (click)="refresh()">Refresh</button>
+</div>
+
+<div class="feed-search">
+    <input type="search" class="feed-search__input"
+        placeholder="Search by id or component…"
+        aria-label="Search vulnerabilities by id or component"
+        (input)="onSearchInput($any($event.target).value)" />
+</div>
+
+<div class="feed-stats">
+    @for (stat of severityStats(); track stat.key) {
+    <div class="stat-pill" [style.--severity-color]="'var(--cb-color-vulnerability-' + stat.key + ')'">
+        <span class="stat-title">{{ stat.title }}</span>
+        <span class="stat-count">{{ stat.count }}</span>
+    </div>
+    }
+</div>
+
+@if (error(); as errorMessage) {
+<div class="feed-error">{{ errorMessage }}</div>
+}
+
+@if (isVulnsLoading()) {
+<div class="feed-loading">Loading vulnerability feed…</div>
+} @else {
+<div class="feed-list">
+    @for (vuln of vulns(); track vuln.id) {
+    <div class="vuln-row">
+        <span class="severity-badge"
+            [style.background]="'var(--cb-color-vulnerability-' + vuln.severity + ')'">
+            {{ abbrFor(vuln.severity) }}
+        </span>
+        <div class="vuln-main">
+            <div class="vuln-top-line">
+                <span class="vuln-id">{{ vuln.id }}</span>
+                @if (vuln.cvss !== null) {
+                <span class="cvss-pill"
+                    [style.background]="'var(--cb-color-vulnerability-' + vuln.severity + ')'">
+                    CVSS {{ vuln.cvss | number: '1.1-1' }}
+                </span>
+                }
+                @if (vuln.epss !== null) {
+                <span class="epss-pill">EPSS {{ vuln.epss * 100 | number: '1.0-0' }}%</span>
+                }
+                <span class="vuln-component">{{ vuln.componentName }} &#64; {{ vuln.componentVersion }}</span>
+                <span class="vuln-published">{{ vuln.publishedAt * 1000 | date: 'MMM d, y' }}</span>
+            </div>
+            <p class="vuln-summary">{{ vuln.summary }}</p>
+        </div>
+    </div>
+    } @empty {
+    <p class="feed-empty">No vulnerabilities match the current filter.</p>
+    }
+</div>
+}
