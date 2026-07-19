@@ -1,0 +1,299 @@
+:host {
+  display: block;
+  padding-bottom: 8px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #e3e8ee; // ring instead of border → no layout size impact
+  overflow: hidden;
+}
+
+.card__base {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto 24px;
+  align-items: center;
+  column-gap: 16px;
+  height: 96px; // fixed base height (virtual list itemSize depends on it)
+  padding: 10px 14px;
+  box-sizing: border-box;
+}
+
+// ---- left -------------------------------------------------------------------
+.card__left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.card__severity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--sev-color);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.card__source {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  background: #011e4c;
+
+  // NVD and OSV both ship as white wordmarks (OSV keeps a red beetle
+  // logomark), so both read on the same navy chip.
+  img {
+    display: block;
+    width: auto;
+    height: 11px;
+  }
+}
+
+// ---- main -------------------------------------------------------------------
+.card__main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.card__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.card__id {
+  color: #1d77ff;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 2px;
+  border: none;
+  background: none;
+  color: #011e4c;
+  cursor: pointer;
+
+  svg {
+    display: block;
+  }
+}
+
+.badge-img {
+  display: block;
+  flex: none;
+  width: auto;
+  height: 16px;
+
+  &--imported {
+    height: 18px;
+  }
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  svg {
+    display: block;
+  }
+}
+
+.pill--cvss {
+  border: 1px solid var(--sev-color);
+  color: var(--sev-color);
+}
+
+.pill--epss {
+  border: 1px solid #23b7e5;
+  color: #23b7e5;
+}
+
+// ---- bottom two-column detail grid -----------------------------------------
+.card__bottom {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cell__icon {
+  flex: none;
+}
+
+.cell__text {
+  overflow: hidden;
+  color: #58666e;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  strong {
+    color: #3a4a52;
+    font-weight: 600;
+  }
+}
+
+.cell__text--severity {
+  color: var(--sev-color);
+
+  strong {
+    color: var(--sev-color);
+  }
+}
+
+// ---- right ------------------------------------------------------------------
+.card__right {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.card__squares {
+  display: flex;
+  gap: 6px;
+}
+
+.square {
+  min-width: 34px;
+  padding: 6px 8px;
+  border: 1.5px solid #011e4c;
+  border-radius: 6px;
+  color: #011e4c;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.card__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: none;
+  background: none;
+  color: #011e4c;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+// ---- expanded (bonus) -------------------------------------------------------
+.card__expanded {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 16px 16px;
+}
+
+.section {
+  padding: 16px 20px;
+  border-radius: 8px;
+
+  &--desc {
+    background: #e9f2fb;
+  }
+
+  &--cwe {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    gap: 12px;
+    width: 540px;
+    max-width: 100%;
+    background: #fbf4e7;
+  }
+}
+
+.section__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.section__title {
+  margin: 0;
+  color: #12233f;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.section__toggle {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #d6e2f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #12233f;
+  cursor: pointer;
+}
+
+.section__body {
+  margin: 0;
+  color: #3a4a52;
+  line-height: 1.5;
+
+  &--clamped {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
+
+.cwe-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #12233f;
+  font-weight: 600;
+}
