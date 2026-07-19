@@ -1,0 +1,182 @@
+:host {
+  display: block;
+}
+
+.tree-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+
+  h2 {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+  }
+
+  .zoom-controls {
+    display: flex;
+    gap: 6px;
+
+    button {
+      min-width: 34px;
+    }
+  }
+}
+
+.tree-chart-wrapper {
+  width: 100%;
+  height: calc(100vh - 60px);
+  overflow: auto;
+  background-color: #f4f5f7;
+  background-image: radial-gradient(#d5d9e0 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.tree-figure {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+
+.tree-svg {
+  display: block;
+  font: 13px 'Roboto', sans-serif;
+}
+
+// Links between cards
+:host ::ng-deep .tree-link {
+  fill: none;
+  stroke: #c4cad6;
+  stroke-width: 1.5px;
+}
+
+// Cards live inside foreignObject, so they are plain HTML styled here.
+:host ::ng-deep {
+  .tree-card-fo {
+    overflow: visible;
+  }
+
+  .tree-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 8px 10px;
+    background: #fff;
+    border: 1.5px solid var(--group-color);
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(20, 30, 60, 0.08);
+    overflow: hidden;
+  }
+
+  .tree-card__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--group-color);
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .tree-card__body {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  .tree-card__name {
+    overflow: hidden;
+    color: #2b3648;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .tree-card__counts {
+    margin-top: 2px;
+    color: #8a94a6;
+    font-size: 12px;
+  }
+
+  .tree-card__chevron {
+    display: flex;
+    flex: none;
+    align-items: center;
+    color: #8a94a6;
+    transition: transform 0.2s ease;
+
+    svg {
+      width: 12px;
+      height: 8px;
+    }
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Combined asset card (bonus): scrollable list, colored by the parent group.
+  .tree-card--assetlist {
+    padding: 6px;
+  }
+
+  .tree-card__assets {
+    display: flex;
+    width: 100%;
+    max-height: 100%;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+  }
+
+  .asset-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 6px;
+    border-radius: 6px;
+
+    &:hover {
+      background: #f5f7fa;
+    }
+  }
+
+  .asset-row__ico {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    background: var(--group-color);
+
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .asset-row__name {
+    overflow: hidden;
+    color: #3a4a52;
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    em {
+      color: #8a94a6;
+      font-style: normal;
+    }
+  }
+}

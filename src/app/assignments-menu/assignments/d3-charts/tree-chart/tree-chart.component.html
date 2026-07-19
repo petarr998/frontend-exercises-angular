@@ -1,0 +1,13 @@
+<div class="tree-toolbar">
+  <button type="button" (click)="backToMain()">Back</button>
+  <h2>Tree Chart</h2>
+  <div class="zoom-controls">
+    <button type="button" (click)="changeZoom('-')" aria-label="Zoom out">−</button>
+    <button type="button" (click)="changeZoom('reset')">Reset</button>
+    <button type="button" (click)="changeZoom('+')" aria-label="Zoom in">+</button>
+  </div>
+</div>
+
+<div class="tree-chart-wrapper">
+  <figure #treeFigure class="tree-figure"></figure>
+</div>
