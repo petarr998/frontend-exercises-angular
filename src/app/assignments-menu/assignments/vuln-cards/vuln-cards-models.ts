@@ -20,6 +20,7 @@ export interface VulnCardCwe {
 
 export interface VulnCard {
   id: string;
+  referenceId: string;
   summary: string;
   severity: VulnCardSeverity;
   cvss: number | null;
@@ -54,6 +55,7 @@ interface RawVuln {
 function toVulnCard(raw: RawVuln): VulnCard {
   return {
     id: raw.id,
+    referenceId: raw.id,
     summary: raw.summary ?? '',
     severity: raw.severity as VulnCardSeverity,
     cvss: raw.cvss ?? null,

@@ -3,7 +3,8 @@ import { VulnCard } from '../vuln-cards-models';
 import { VulnCardComponent } from './vuln-card.component';
 
 const mockCard: VulnCard = {
-  id: 'CVE-2023-35116',
+  id: 'CVE-2023-35116-1',
+  referenceId: 'CVE-2023-35116',
   summary: 'A crafted object can cause a denial of service.',
   severity: 'medium',
   cvss: 4.7,
@@ -32,19 +33,53 @@ describe('VulnCardComponent', () => {
     el = fixture.nativeElement as HTMLElement;
   });
 
-  it('renders the id, the first-letter severity badge and the mapping-source logo', () => {
+  it('renders the id, severity letter, and stacked source logo', () => {
     expect(fixture.componentInstance).toBeTruthy();
-    expect(el.querySelector('.card__id')?.textContent).toContain('CVE-2023-35116');
+    expect(el.querySelector('.card__id')?.textContent).toContain('CVE-2023-35116-1');
     expect(el.querySelector('.card__severity')?.textContent?.trim()).toBe('M');
+    expect(el.querySelector('.card__logo')).toBeTruthy();
     expect(el.querySelector('.card__source img')?.getAttribute('src')).toContain(
       'nvd-icon-new.svg',
+    );
+  });
+
+  it('uses SeverityParams.abbr so malicious is distinct from medium', () => {
+    fixture.componentRef.setInput('data', {
+      ...mockCard,
+      severity: 'malicious' as const,
+    });
+    fixture.detectChanges();
+    const badge = el.querySelector('.card__severity') as HTMLElement;
+    expect(badge.textContent?.trim()).toBe('MAL');
+    expect(badge.classList).toContain('card__severity--long');
+  });
+
+  it('opens NVD with referenceId (not the uniqueness-suffixed display id)', () => {
+    const openSpy = spyOn(window, 'open');
+    (el.querySelector('[aria-label="Open reference"]') as HTMLButtonElement).click();
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://nvd.nist.gov/vuln/detail/CVE-2023-35116',
+      '_blank',
+      'noopener',
+    );
+  });
+
+  it('opens the CWE definition page from the CWE button', () => {
+    const openSpy = spyOn(window, 'open');
+    fixture.componentRef.setInput('expanded', true);
+    fixture.detectChanges();
+    (el.querySelector('[aria-label="Open CWE reference"]') as HTMLButtonElement).click();
+    expect(openSpy).toHaveBeenCalledWith(
+      'https://cwe.mitre.org/data/definitions/770.html',
+      '_blank',
+      'noopener',
     );
   });
 
   it('drives severity color from SeverityParams through a CSS custom property', () => {
     const card = el.querySelector('.card') as HTMLElement;
     // SeverityParams.medium.color
-    expect(card.style.getPropertyValue('--sev-color')).toBe('#F3BB2D');
+    expect(card.style.getPropertyValue('--sev-color')).toBe('#F5B40E');
   });
 
   it('shows the DISPUTED badge and the EPSS percentage (0.31 → 31%)', () => {

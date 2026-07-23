@@ -1,7 +1,10 @@
 <article class="card" [style.--sev-color]="severityColor()">
   <div class="card__base">
-    <div class="card__left">
-      <div class="card__severity">{{ severityLetter() }}</div>
+    <div class="card__logo">
+      <div
+        class="card__severity"
+        [class.card__severity--long]="severityLetter().length > 1"
+      >{{ severityLetter() }}</div>
       @if (source(); as source) {
         <div class="card__source">
           <img [src]="sourceIconUrl()" [alt]="source" />
@@ -11,80 +14,84 @@
 
     <div class="card__main">
       <div class="card__top">
-        <button type="button" class="icon-btn" aria-label="Copy id" (click)="copyId()">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M7 11H13C13.5523 11 14 10.5523 14 10V6V3C14 2.68524 13.8518 2.38885 13.6 2.2L12.2667 1.2C12.0936 1.07018 11.883 1 11.6667 1H10H7C6.44772 1 6 1.44772 6 2V10C6 10.5523 6.44772 11 7 11Z" stroke="#506484" stroke-width="1.5"/>
-            <path d="M10 13.1818V14C10 14.5523 9.55228 15 9 15H3C2.44772 15 2 14.5523 2 14V6C2 5.44772 2.44772 5 3 5H4" stroke="#506484" stroke-width="1.5"/>
-            <path d="M12 11.1818V12C12 12.5523 11.5523 13 11 13H5C4.44772 13 4 12.5523 4 12V4C4 3.44772 4.44772 3 5 3H6" stroke="#506484" stroke-width="1.5"/>
-            <path d="M8 7L9.5 8L11.5 5" stroke="#506484"/>
-          </svg>
+        <button type="button" class="icon-btn icon-btn--lead" aria-label="Copy id" (click)="copyId()">
+          <span
+            class="ico ico--tint"
+            [style.--icon]="'url(' + icon.copy + ')'"
+            aria-hidden="true"
+          ></span>
         </button>
 
-        <span class="card__id">{{ data().id }}</span>
+        <div class="card__top-body">
+          <span class="card__id">{{ data().id }}</span>
 
-        @if (data().disputed) {
-          <img class="badge-img" src="vuln-card-images/disputed-icon-new.svg" alt="Disputed" />
-        }
+          @if (data().disputed) {
+            <img class="badge-img" [src]="icon.disputed" alt="Disputed" />
+          }
 
-        @if (data().cvss !== null) {
-          <span class="pill pill--cvss">
-            {{ data().cvss | number: '1.1-1' }} CVSS
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <circle cx="6" cy="6" r="6" fill="#1d77ff"/>
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M9 7H3V5H9V7Z" fill="white"/>
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M5 9L5 3L7 3L7 9L5 9Z" fill="white"/>
-            </svg>
-          </span>
-        }
+          @if (data().cvss !== null) {
+            <span class="pill pill--cvss">
+              {{ data().cvss | number: '1.1-1' }} CVSS
+              <span class="ico ico--plus" [innerHTML]="plusIcon"></span>
+            </span>
+          }
 
-        @if (epssPercent() !== null) {
-          <span class="pill pill--epss">{{ epssPercent() }}% EPSS</span>
-        }
+          @if (epssPercent() !== null) {
+            <span class="pill pill--epss">{{ epssPercent() }}% EPSS</span>
+          }
 
-        <button type="button" class="icon-btn" aria-label="Open reference" (click)="openReference()">
-          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M14.1666 2.85718L17.2052 5.99068L14.1666 9.12419" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M15.9524 11.9395V15.44C15.9524 16.386 15.254 17.1429 14.381 17.1429H4.42861C3.55559 17.1429 2.85718 16.386 2.85718 15.44V4.56011C2.85718 3.61404 3.55559 2.85718 4.42861 2.85718H10.627" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M8.12354 13.0173C8.12354 9.12415 10.4974 5.89569 14.3905 5.89569H16.8594" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
+          <button type="button" class="icon-btn" aria-label="Open reference" (click)="openReference()">
+            <span
+              class="ico ico--open-ref ico--tint"
+              [style.--icon]="'url(' + icon.openRef + ')'"
+              aria-hidden="true"
+            ></span>
+          </button>
+        </div>
       </div>
 
       <div class="card__bottom">
         <div class="cell">
-          <svg class="cell__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3.33333 14.6666C2.96667 14.6666 2.65278 14.5361 2.39167 14.275C2.13056 14.0139 2 13.7 2 13.3333V3.99998C2 3.63331 2.13056 3.31942 2.39167 3.05831C2.65278 2.7972 2.96667 2.66665 3.33333 2.66665H4V1.33331H5.33333V2.66665H10.6667V1.33331H12V2.66665H12.6667C13.0333 2.66665 13.3472 2.7972 13.6083 3.05831C13.8694 3.31942 14 3.63331 14 3.99998V13.3333C14 13.7 13.8694 14.0139 13.6083 14.275C13.3472 14.5361 13.0333 14.6666 12.6667 14.6666H3.33333ZM3.33333 13.3333H12.6667V6.66665H3.33333V13.3333ZM3.33333 5.33331H12.6667V3.99998H3.33333V5.33331Z" fill="#506484"/>
-          </svg>
-          <span class="cell__text"><strong>Published:</strong> {{ data().publishedAt * 1000 | date: 'MMM d, y' }}</span>
+          <span
+            class="cell__icon ico ico--tint"
+            [style.--icon]="'url(' + icon.calendar + ')'"
+            aria-hidden="true"
+          ></span>
+          <span class="cell__text cell__text--meta"><strong>Published:</strong> {{ data().publishedAt * 1000 | date: 'MMM d, y' }}</span>
         </div>
 
         <div class="cell">
           @if (primaryComponent(); as component) {
-            <svg class="cell__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M7 11H13C13.5523 11 14 10.5523 14 10V6V3C14 2.68524 13.8518 2.38885 13.6 2.2L12.2667 1.2C12.0936 1.07018 11.883 1 11.6667 1H10H7C6.44772 1 6 1.44772 6 2V10C6 10.5523 6.44772 11 7 11Z" stroke="var(--sev-color)" stroke-width="1.5"/>
-            </svg>
+            <span
+              class="cell__icon ico ico--tint"
+              [style.--icon]="'url(' + icon.contentCopy + ')'"
+              aria-hidden="true"
+            ></span>
             <span class="cell__text cell__text--severity">
               <strong>{{ component.name }}</strong>
-              @if (component.version) { , versions: {{ component.version }} }
+              @if (component.version) {
+                <strong>, versions:</strong> {{ component.version }}
+              }
             </span>
           }
         </div>
 
         <div class="cell">
-          <svg class="cell__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3.33333 14.6666C2.96667 14.6666 2.65278 14.5361 2.39167 14.275C2.13056 14.0139 2 13.7 2 13.3333V3.99998C2 3.63331 2.13056 3.31942 2.39167 3.05831C2.65278 2.7972 2.96667 2.66665 3.33333 2.66665H4V1.33331H5.33333V2.66665H10.6667V1.33331H12V2.66665H12.6667C13.0333 2.66665 13.3472 2.7972 13.6083 3.05831C13.8694 3.31942 14 3.63331 14 3.99998V13.3333C14 13.7 13.8694 14.0139 13.6083 14.275C13.3472 14.5361 13.0333 14.6666 12.6667 14.6666H3.33333ZM3.33333 13.3333H12.6667V6.66665H3.33333V13.3333ZM3.33333 5.33331H12.6667V3.99998H3.33333V5.33331Z" fill="#506484"/>
-          </svg>
-          <span class="cell__text"><strong>Updated:</strong> {{ data().modifiedAt * 1000 | date: 'MMM d, y' }}</span>
+          <span
+            class="cell__icon ico ico--tint"
+            [style.--icon]="'url(' + icon.calendar + ')'"
+            aria-hidden="true"
+          ></span>
+          <span class="cell__text cell__text--meta"><strong>Updated:</strong> {{ data().modifiedAt * 1000 | date: 'MMM d, y' }}</span>
         </div>
 
         <div class="cell">
-          <svg class="cell__icon" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <rect x="2.66667" y="2.00004" width="10.6667" height="12" rx="0.666667" stroke="#506484" stroke-width="1.33333"/>
-            <path d="M5.33333 5.33337H10.6667" stroke="#506484" stroke-width="1.33333" stroke-linecap="round"/>
-            <path d="M5.33333 8H10.6667" stroke="#506484" stroke-width="1.33333" stroke-linecap="round"/>
-            <path d="M5.33333 10.6666H8.66666" stroke="#506484" stroke-width="1.33333" stroke-linecap="round"/>
-          </svg>
-          <span class="cell__text">{{ data().summary }}</span>
+          <span
+            class="cell__icon ico ico--tint"
+            [style.--icon]="'url(' + icon.desc + ')'"
+            aria-hidden="true"
+          ></span>
+          <span class="cell__text cell__text--meta">{{ data().summary }}</span>
         </div>
       </div>
     </div>
@@ -94,7 +101,7 @@
         <span class="square">VDP</span>
         <span class="square">VEX</span>
       </div>
-      <img class="badge-img badge-img--imported" src="vuln-card-images/imported-icon-new.svg" alt="Imported" />
+      <img class="badge-img badge-img--imported" [src]="icon.imported" alt="Imported" />
     </div>
 
     <button
@@ -105,40 +112,37 @@
       aria-label="Toggle details"
       (click)="onToggle()"
     >
-      <svg width="14" height="9" viewBox="0 0 15 9" aria-hidden="true">
-        <path d="M12.7716 0.57784L14.3418 2.08605L7.61224 8.5498L0.882689 2.08605L2.45292 0.57784L7.61224 5.53339L12.7716 0.57784Z" fill="currentColor"/>
-      </svg>
+      <span
+        class="ico ico--chevron ico--tint"
+        [style.--icon]="'url(' + icon.chevron + ')'"
+        aria-hidden="true"
+      ></span>
     </button>
   </div>
 
   @if (expanded()) {
     <div class="card__expanded">
       <section class="section section--desc">
-        <div class="section__head">
+        <div class="section__main">
           <h3 class="section__title">Description</h3>
-          <button
-            type="button"
-            class="section__toggle"
-            [attr.aria-expanded]="descriptionExpanded()"
-            aria-label="Toggle full description"
-            (click)="toggleDescription()"
-          >
-            @if (descriptionExpanded()) {
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7.28333 20L6 18.88L11.5 14.08L17 18.88L15.7167 20L11.5 16.32L7.28333 20ZM11.5 9.92L6 5.12L7.28333 4L11.5 7.68L15.7167 4L17 5.12L11.5 9.92Z" fill="currentColor"/>
-              </svg>
-            } @else {
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M7.28333 10.0001L6 8.88008L11.5 4.08008L17 8.88008L15.7167 10.0001L11.5 6.32008L7.28333 10.0001Z" fill="currentColor"/>
-                <path d="M11.5 19.92L6 15.12L7.28333 14L11.5 17.68L15.7167 14L17 15.12L11.5 19.92Z" fill="currentColor"/>
-              </svg>
-            }
-          </button>
+          <p
+            class="section__body"
+            [class.section__body--clamped]="!descriptionExpanded()"
+          >{{ data().summary }}</p>
         </div>
-        <p
-          class="section__body"
-          [class.section__body--clamped]="!descriptionExpanded()"
-        >{{ data().summary }}</p>
+        <button
+          type="button"
+          class="section__toggle"
+          [attr.aria-expanded]="descriptionExpanded()"
+          aria-label="Toggle full description"
+          (click)="toggleDescription()"
+        >
+          <img
+            class="ico ico--toggle"
+            [src]="descriptionExpanded() ? icon.collapse : icon.expand"
+            alt=""
+          />
+        </button>
       </section>
 
       @if (data().cwes.length) {
@@ -147,12 +151,12 @@
           @for (cwe of data().cwes; track cwe.id) {
             <div class="cwe-row">
               <span>{{ cwe.id }}</span>
-              <button type="button" class="icon-btn" aria-label="Open CWE reference" (click)="openReference()">
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <path d="M14.1666 2.85718L17.2052 5.99068L14.1666 9.12419" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M15.9524 11.9395V15.44C15.9524 16.386 15.254 17.1429 14.381 17.1429H4.42861C3.55559 17.1429 2.85718 16.386 2.85718 15.44V4.56011C2.85718 3.61404 3.55559 2.85718 4.42861 2.85718H10.627" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M8.12354 13.0173C8.12354 9.12415 10.4974 5.89569 14.3905 5.89569H16.8594" stroke="#011E4C" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+              <button type="button" class="icon-btn" aria-label="Open CWE reference" (click)="openCwe(cwe.id)">
+                <span
+                  class="ico ico--export ico--tint"
+                  [style.--icon]="'url(' + icon.export + ')'"
+                  aria-hidden="true"
+                ></span>
               </button>
             </div>
           }

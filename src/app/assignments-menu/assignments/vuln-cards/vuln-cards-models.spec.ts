@@ -11,6 +11,12 @@ describe('generateVulnCards', () => {
     expect(new Set(cards.map((c) => c.id)).size).toBe(1000);
   });
 
+  it('keeps referenceId as the original CVE/MAL id when id is suffixed', () => {
+    const [first] = generateVulnCards(1);
+    expect(first.id).toBe('CVE-2023-35116-1');
+    expect(first.referenceId).toBe('CVE-2023-35116');
+  });
+
   it('normalises the mock quirks into a consistent VulnCard shape', () => {
     const [first, second] = generateVulnCards(2);
 
