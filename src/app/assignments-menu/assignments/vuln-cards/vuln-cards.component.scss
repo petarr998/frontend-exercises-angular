@@ -31,4 +31,16 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  background: #fff;
+  border-top: 1px solid #e3e8ee;
+
+  ::ng-deep .cdk-virtual-scroll-content-wrapper {
+    display: block;
+  }
+
+  ::ng-deep app-vuln-card {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
 }

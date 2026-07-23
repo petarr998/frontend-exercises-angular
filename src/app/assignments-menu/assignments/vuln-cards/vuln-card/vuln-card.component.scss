@@ -1,73 +1,118 @@
 :host {
   display: block;
-  padding-bottom: 8px;
+  margin: 0;
+  padding: 0;
+  background: #fff;
 }
 
 .card {
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 0 1px #e3e8ee; // ring instead of border → no layout size impact
+  border: 0;
+  border-radius: 0;
+  border-bottom: 1px solid #e3e8ee;
+  box-shadow: none;
   overflow: hidden;
+  margin: 0 14px;
 }
+
+$base-pad-y: 14px;
+$base-content-h: 66px;
+$base-h: $base-content-h + $base-pad-y * 2;
 
 .card__base {
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr) auto 24px;
-  align-items: center;
-  column-gap: 16px;
-  height: 96px; // fixed base height (virtual list itemSize depends on it)
-  padding: 10px 14px;
+  grid-template-columns: auto minmax(0, 1fr) auto 24px;
+  align-items: stretch;
+  column-gap: 8px;
+  height: $base-h;
+  min-height: $base-h;
+  max-height: $base-h;
+  padding: $base-pad-y 0px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-// ---- left -------------------------------------------------------------------
-.card__left {
+$logo-square: 50px;
+$logo-radius: 6px;
+$logo-overlap: 4px;
+$logo-seam: 2px;
+$logo-source-h: $base-content-h - $logo-square + $logo-overlap;
+
+.card__logo {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  width: $logo-square;
+  height: 100%;
 }
 
 .card__severity {
+  position: relative;
+  z-index: 2;
   display: flex;
+  flex: none;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
+  width: $logo-square;
+  height: $logo-square;
+  border-radius: $logo-radius;
+  // White seam under the severity square so it sits over the navy bar.
+  box-shadow: 0 $logo-seam 0 0 #fff;
   background: var(--sev-color);
   color: #fff;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-}
+  line-height: 1;
 
-.card__source {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  background: #011e4c;
-
-  // NVD and OSV both ship as white wordmarks (OSV keeps a red beetle
-  // logomark), so both read on the same navy chip.
-  img {
-    display: block;
-    width: auto;
-    height: 11px;
+  &--long {
+    font-size: 11px;
+    letter-spacing: 0.02em;
   }
 }
 
-// ---- main -------------------------------------------------------------------
+.card__source {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: $logo-square;
+  height: $logo-source-h;
+  margin-top: -$logo-overlap;
+  padding-top: $logo-overlap + 2px;
+  border-radius: $logo-radius;
+  background: #011e4d;
+
+  img {
+    display: block;
+    width: auto;
+    height: 9px;
+  }
+}
+
 .card__main {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
   min-width: 0;
+  height: 100%;
+  padding-right: 10px;
 }
 
+$lead-ico: 14px;
+$lead-copy: 16px;
+$lead-gap: 3px;
+
 .card__top {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.card__top-body {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -76,9 +121,9 @@
 }
 
 .card__id {
-  color: #1d77ff;
-  font-size: 16px;
-  font-weight: 700;
+  color: #1c77ff;
+  font-size: 20px;
+  font-weight: 400;
   white-space: nowrap;
 }
 
@@ -90,12 +135,65 @@
   padding: 2px;
   border: none;
   background: none;
-  color: #011e4c;
+  color: #011e4d;
   cursor: pointer;
 
-  svg {
-    display: block;
+  &--lead {
+    width: $lead-copy;
+    height: $lead-copy;
+    padding: 0;
+
+    .ico {
+      width: $lead-copy;
+      height: $lead-copy;
+    }
   }
+}
+
+.ico {
+  display: block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+
+  // Recolor assignment SVGs without editing the asset files.
+  &--tint {
+    background-color: #011e4d;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+  }
+
+  &--plus {
+    width: 12px;
+    height: 12px;
+  }
+
+  &--export {
+    width: 16px;
+    height: 16px;
+  }
+
+  &--open-ref {
+    width: 20px;
+    height: 20px;
+  }
+
+  &--chevron {
+    width: 14px;
+    height: 9px;
+  }
+
+  &--toggle {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+:host ::ng-deep .ico--plus svg {
+  display: block;
+  width: 12px;
+  height: 12px;
 }
 
 .badge-img {
@@ -105,7 +203,9 @@
   height: 16px;
 
   &--imported {
-    height: 18px;
+    width: calc(100% - 2px);
+    height: auto;
+    margin: 0 1px;
   }
 }
 
@@ -119,10 +219,6 @@
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-
-  svg {
-    display: block;
-  }
 }
 
 .pill--cvss {
@@ -135,12 +231,11 @@
   color: #23b7e5;
 }
 
-// ---- bottom two-column detail grid -----------------------------------------
 .card__bottom {
   display: grid;
   grid-template-columns: minmax(0, auto) minmax(0, 1fr);
   align-items: center;
-  column-gap: 24px;
+  column-gap: 14px;
   row-gap: 4px;
   min-width: 0;
   font-size: 13px;
@@ -149,19 +244,21 @@
 .cell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: $lead-gap;
   min-width: 0;
 }
 
 .cell__icon {
   flex: none;
+  width: $lead-ico;
+  height: $lead-ico;
 }
 
 .cell__text {
   overflow: hidden;
   color: #58666e;
   white-space: nowrap;
-  text-overflow: ellipsis;
+  text-overflow: clip;
 
   strong {
     color: #3a4a52;
@@ -174,42 +271,66 @@
 
   strong {
     color: var(--sev-color);
+    font-weight: 700;
   }
 }
 
-// ---- right ------------------------------------------------------------------
+.cell__text--meta {
+  color: #011e4d;
+
+  strong {
+    color: #011e4d;
+  }
+}
+
+$right-col: 91px; // imported badge width
+$square-gap: 6px;
+
 .card__right {
   display: flex;
   flex: none;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: stretch;
+  width: $right-col;
+  height: 100%;
 }
 
 .card__squares {
   display: flex;
-  gap: 6px;
+  gap: $square-gap;
+  width: 100%;
 }
 
 .square {
-  min-width: 34px;
-  padding: 6px 8px;
-  border: 1.5px solid #011e4c;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: calc((100% - #{$square-gap}) / 2);
+  aspect-ratio: 1;
+  height: auto;
+  padding: 0;
+  border: 2px solid #011e4d;
   border-radius: 6px;
-  color: #011e4c;
+  color: #011e4d;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1;
   text-align: center;
 }
 
 .card__chevron {
   display: flex;
+  align-self: center;
   align-items: center;
   justify-content: center;
   padding: 4px;
   border: none;
   background: none;
-  color: #011e4c;
+  color: #011e4d;
   cursor: pointer;
   transition: transform 0.2s ease;
 
@@ -218,7 +339,6 @@
   }
 }
 
-// ---- expanded (bonus) -------------------------------------------------------
 .card__expanded {
   display: flex;
   flex-direction: column;
@@ -227,11 +347,22 @@
 }
 
 .section {
-  padding: 16px 20px;
+  padding: 24px;
   border-radius: 8px;
 
   &--desc {
-    background: #e9f2fb;
+    position: relative;
+    background: #e1f1f9;
+    padding-right: 47px; // clear of absolute toggle
+
+    .section__title {
+      margin-bottom: 16px;
+    }
+
+    .section__title,
+    .section__body {
+      color: #1e1f20;
+    }
   }
 
   &--cwe {
@@ -239,52 +370,59 @@
     flex-direction: column;
     align-self: flex-start;
     gap: 12px;
-    width: 540px;
+    width: 321px;
     max-width: 100%;
-    background: #fbf4e7;
+    background: #faf3e7;
+
+    .section__title,
+    .cwe-row {
+      color: #011e4d;
+    }
   }
 }
 
-.section__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 8px;
+.section__main {
+  min-width: 0;
 }
 
-.section__title {
-  margin: 0;
+h3.section__title {
+  margin: 0 0 8px;
   color: #12233f;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .section__toggle {
+  position: absolute;
+  top: 7px;
+  right: 7px;
   display: flex;
-  flex: none;
   align-items: center;
   justify-content: center;
   width: 32px;
   height: 32px;
   padding: 0;
-  border: 1px solid #d6e2f0;
-  border-radius: 8px;
-  background: #fff;
+  border: 0;
+  border-radius: 5px;
+  background: #f7f5fd;
   color: #12233f;
   cursor: pointer;
+  line-height: 0;
+
+  .ico--toggle {
+    display: block;
+    margin: 0;
+  }
 }
 
 .section__body {
   margin: 0;
   color: #3a4a52;
+  font-weight: 200;
   line-height: 1.5;
 
   &--clamped {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    max-height: calc(1.5em * 2);
     overflow: hidden;
   }
 }
@@ -293,7 +431,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  color: #12233f;
-  font-weight: 600;
+  gap: 12px;
+  font-weight: 400;
+
+  .icon-btn {
+    flex: none;
+    padding: 0;
+    color: #011e4d;
+
+    .ico--export {
+      width: 22px;
+      height: 22px;
+    }
+  }
 }

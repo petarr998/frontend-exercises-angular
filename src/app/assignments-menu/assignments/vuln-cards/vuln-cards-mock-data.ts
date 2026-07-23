@@ -6,7 +6,7 @@ export interface SeverityParam {
 
 export const SeverityParams: Record<string, SeverityParam> = {
   low: { abbr: "L", title: "Low", color: "#0f93bb" },
-  medium: { abbr: "M", title: "Medium", color: "#F3BB2D" },
+  medium: { abbr: "M", title: "Medium", color: "#F5B40E" },
   high: { abbr: "H", title: "High", color: "#E28722" },
   critical: { abbr: "C", title: "Critical", color: "#D9534F" },
   malicious: { abbr: "MAL", title: "Malicious", color: "black" },
