@@ -41,17 +41,25 @@
 
 .tree-svg {
   display: block;
-  font: 13px 'Roboto', sans-serif;
+  font:
+    13px "Roboto",
+    sans-serif;
 }
 
-// Links between cards
 :host ::ng-deep .tree-link {
   fill: none;
-  stroke: #c4cad6;
-  stroke-width: 1.5px;
+  stroke: #929292;
+  stroke-width: 1.25px;
 }
 
-// Cards live inside foreignObject, so they are plain HTML styled here.
+:host ::ng-deep .tree-toggle {
+  circle {
+    fill: #fff;
+    stroke: none;
+    filter: drop-shadow(0 0 1.5px rgba(30, 40, 60, 0.1));
+  }
+}
+
 :host ::ng-deep {
   .tree-card-fo {
     overflow: visible;
@@ -59,15 +67,32 @@
 
   .tree-card {
     display: flex;
-    align-items: center;
-    gap: 10px;
     box-sizing: border-box;
     height: 100%;
-    padding: 8px 10px;
-    background: #fff;
+    min-height: 0;
+    padding: 4px;
+    background: color-mix(in srgb, var(--group-color) 5%, #fff);
     border: 1.5px solid var(--group-color);
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(20, 30, 60, 0.08);
+    border-radius: 5px;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .tree-card__surface {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: 8px;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow:
+      0 0 6.5px 2.5px rgba(30, 40, 60, 0.15),
+      inset 0 0 6.5px rgba(30, 40, 60, 0.08);
     overflow: hidden;
   }
 
@@ -76,14 +101,20 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    box-sizing: border-box;
+    width: 30px;
+    height: 30px;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1;
+    border-radius: 3px;
     background: var(--group-color);
 
     svg {
-      width: 22px;
-      height: 22px;
+      width: 60%;
+      height: 60%;
     }
   }
 
@@ -91,60 +122,69 @@
     display: flex;
     flex: 1;
     min-width: 0;
+    max-width: 115px;
     flex-direction: column;
+    justify-content: center;
+    line-height: 1.2;
   }
 
   .tree-card__name {
     overflow: hidden;
     color: #2b3648;
+    font-size: 13px;
     font-weight: 600;
+    line-height: 1.2;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
   .tree-card__counts {
-    margin-top: 2px;
+    margin-top: 1px;
     color: #8a94a6;
-    font-size: 12px;
+    font-size: 11px;
+    line-height: 1.2;
   }
 
-  .tree-card__chevron {
-    display: flex;
-    flex: none;
-    align-items: center;
-    color: #8a94a6;
-    transition: transform 0.2s ease;
-
-    svg {
-      width: 12px;
-      height: 8px;
+  .tree-card--assetList {
+    .tree-card__surface {
+      align-items: stretch;
+      padding: 4px;
     }
-
-    &--open {
-      transform: rotate(180deg);
-    }
-  }
-
-  // Combined asset card (bonus): scrollable list, colored by the parent group.
-  .tree-card--assetlist {
-    padding: 6px;
   }
 
   .tree-card__assets {
     display: flex;
+    box-sizing: border-box;
     width: 100%;
-    max-height: 100%;
+    height: 100%;
+    min-height: 0;
     flex-direction: column;
+    justify-content: safe center;
     gap: 2px;
+    overflow-x: hidden;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #c4cad6 transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c4cad6;
+      border-radius: 4px;
+    }
   }
 
   .asset-row {
     display: flex;
+    flex: none;
     align-items: center;
+    box-sizing: border-box;
     gap: 8px;
-    padding: 3px 6px;
-    border-radius: 6px;
+    height: 26px;
+    padding: 0 4px;
+    border-radius: 4px;
 
     &:hover {
       background: #f5f7fa;
@@ -156,27 +196,29 @@
     flex: none;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
     background: var(--group-color);
 
     svg {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
     }
   }
 
   .asset-row__name {
     overflow: hidden;
-    color: #3a4a52;
-    font-size: 13px;
+    color: #2b3648;
+    font-size: 12px;
+    font-weight: 600;
     white-space: nowrap;
     text-overflow: ellipsis;
 
     em {
       color: #8a94a6;
       font-style: normal;
+      font-weight: 400;
     }
   }
 }

@@ -9,7 +9,14 @@ import {
 import { Router } from '@angular/router';
 import * as d3 from 'd3';
 import { treeChartMockData } from '../charts-mock-data';
-import { CHEVRON_ICON, GROUP_ICON, TREE_ICONS } from './tree-icons';
+import {
+  CHEVRON_COLOR,
+  CHEVRON_DOWN,
+  CHEVRON_RIGHT,
+  CHEVRON_STROKE,
+  GROUP_ICON,
+  TREE_ICONS,
+} from './tree-icons';
 import {
   CARD_WIDTH,
   ORG_COLOR,
@@ -41,8 +48,11 @@ type LinkPoint = { x: number; y: number };
 
 const MARGIN = { top: 48, right: 48, bottom: 48, left: 48 };
 const COL_GAP = 90; // horizontal gap between a card's right edge and the next column
-const VERTICAL_GAP = 24; // minimum gap between stacked cards
+const VERTICAL_GAP = 5; // minimum gap between stacked cards
 const DEFAULT_EXPANDED_DEPTH = 2;
+const TOGGLE_R = 7;
+const TOGGLE_X = CARD_WIDTH + TOGGLE_R + 2;
+const LINK_START = CARD_WIDTH;
 
 function escapeHtml(value: string): string {
   return value
@@ -50,6 +60,14 @@ function escapeHtml(value: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+function isCollapsible(d: RenderNode): boolean {
+  return !!(d._children && d._children.length);
+}
+
+function isOpen(d: RenderNode): boolean {
+  return !!(d.children && d.children.length);
 }
 
 @Component({
@@ -78,8 +96,11 @@ export class TreeChartComponent {
   private contentHeight = 0;
 
   private readonly diagonal = d3
-    .linkHorizontal<{ source: LinkPoint; target: LinkPoint }, [number, number]>()
-    .source((d) => [d.source.y + CARD_WIDTH, d.source.x])
+    .linkHorizontal<
+      { source: LinkPoint; target: LinkPoint },
+      [number, number]
+    >()
+    .source((d) => [d.source.y + LINK_START, d.source.x])
     .target((d) => [d.target.y, d.target.x]);
 
   constructor() {
@@ -157,7 +178,7 @@ export class TreeChartComponent {
       maxY = Math.max(maxY, node.y ?? 0);
     });
 
-    this.contentWidth = maxY + CARD_WIDTH + MARGIN.left + MARGIN.right;
+    this.contentWidth = maxY + TOGGLE_X + TOGGLE_R + MARGIN.left + MARGIN.right;
     this.contentHeight = maxX - minX + MARGIN.top + MARGIN.bottom;
     this.svg.attr(
       'viewBox',
@@ -182,7 +203,7 @@ export class TreeChartComponent {
       .attr('class', 'tree-node')
       .attr('transform', `translate(${source.y0 ?? 0},${source.x0 ?? 0})`)
       .attr('opacity', 0)
-      .style('cursor', (d) => (d.children || d._children ? 'pointer' : 'default'))
+      .style('cursor', (d) => (isCollapsible(d) ? 'pointer' : 'default'))
       .on('click', (_event, d) => this.toggle(d));
 
     nodeEnter
@@ -196,10 +217,29 @@ export class TreeChartComponent {
       .attr('class', (d) => `tree-card tree-card--${d.data.model}`)
       .style('--group-color', (d) => d.data.color ?? ORG_COLOR);
 
+    const toggleEnter = nodeEnter.append('g').attr('class', 'tree-toggle');
+    toggleEnter.append('circle').attr('r', TOGGLE_R);
+    toggleEnter
+      .append('path')
+      .attr('class', 'tree-toggle__icon')
+      .attr('fill', 'none')
+      .attr('stroke', CHEVRON_COLOR)
+      .attr('stroke-width', CHEVRON_STROKE)
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-linejoin', 'round');
+
     const nodeMerge = node.merge(nodeEnter);
     nodeMerge
       .select<HTMLDivElement>('foreignObject > div')
       .html((d) => this.cardInner(d));
+
+    nodeMerge
+      .select<SVGGElement>('g.tree-toggle')
+      .attr('display', (d) => (isCollapsible(d) ? null : 'none'))
+      .attr('transform', () => `translate(${TOGGLE_X},0)`)
+      .select('path.tree-toggle__icon')
+      .attr('d', (d) => (isOpen(d) ? CHEVRON_DOWN : CHEVRON_RIGHT));
+
     animated(nodeMerge)
       .attr('transform', (d: RenderNode) => `translate(${d.y},${d.x})`)
       .attr('opacity', 1);
@@ -210,9 +250,10 @@ export class TreeChartComponent {
       .remove();
 
     const link = this.gLink
-      .selectAll<SVGPathElement, { source: RenderNode; target: RenderNode }>(
-        'path.tree-link',
-      )
+      .selectAll<
+        SVGPathElement,
+        { source: RenderNode; target: RenderNode }
+      >('path.tree-link')
       .data(links, (d) => d.target.id!);
 
     const linkEnter = link
@@ -247,10 +288,10 @@ export class TreeChartComponent {
   }
 
   private toggle(d: RenderNode): void {
-    if (!d._children) {
+    if (!isCollapsible(d)) {
       return;
     }
-    d.children = d.children ? undefined : d._children;
+    d.children = d.children ? undefined : (d._children ?? undefined);
     this.update(d);
   }
 
@@ -262,11 +303,6 @@ export class TreeChartComponent {
 
   private cardInner(d: RenderNode): string {
     const node = d.data;
-    const collapsible = !!d._children;
-    const open = collapsible && !!d.children;
-    const chevron = collapsible
-      ? `<span class="tree-card__chevron ${open ? 'tree-card__chevron--open' : ''}">${CHEVRON_ICON}</span>`
-      : '';
 
     if (node.model === 'assetList') {
       const rows = (node.assets ?? [])
@@ -278,7 +314,7 @@ export class TreeChartComponent {
         </div>`,
         )
         .join('');
-      return `<div class="tree-card__assets">${rows}</div>`;
+      return `<div class="tree-card__surface"><div class="tree-card__assets">${rows}</div></div>`;
     }
 
     const icon = TREE_ICONS[node.model] ?? GROUP_ICON;
@@ -287,11 +323,12 @@ export class TreeChartComponent {
         ? `<div class="tree-card__counts">${node.groupCount ?? 0}G/${node.assetCount ?? 0}A</div>`
         : '';
     return `
-      <span class="tree-card__icon">${icon}</span>
-      <span class="tree-card__body">
-        <span class="tree-card__name" title="${escapeHtml(node.name)}">${escapeHtml(node.name)}</span>
-        ${counts}
-      </span>
-      ${chevron}`;
+      <div class="tree-card__surface">
+        <span class="tree-card__icon">${icon}</span>
+        <span class="tree-card__body">
+          <span class="tree-card__name" title="${escapeHtml(node.name)}">${escapeHtml(node.name)}</span>
+          ${counts}
+        </span>
+      </div>`;
   }
 }

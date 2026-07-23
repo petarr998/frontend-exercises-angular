@@ -1,19 +1,20 @@
 import type { HierarchyNode } from 'd3';
 import { TreeChartDataModel } from '../charts-models';
 
-export const CARD_WIDTH = 210;
-export const BASE_CARD_HEIGHT = 56;
+export const CARD_WIDTH = 200;
+export const BASE_CARD_HEIGHT = 60;
 export const ASSET_ROW_HEIGHT = 26;
-const ASSET_LIST_PADDING = 16;
-export const MAX_ASSET_LIST_HEIGHT = BASE_CARD_HEIGHT * 3; // spec: max 3× base card, scroll beyond
+const ASSET_ROW_GAP = 2;
+const ASSET_LIST_CHROME = 21;
+export const MAX_ASSET_LIST_HEIGHT = BASE_CARD_HEIGHT * 3;
 
 // Distinct group colors; children inherit their top-level group's color.
 export const GROUP_COLORS = [
-  '#6c5ce7', // purple
-  '#2e7d32', // green
-  '#e8822e', // orange
+  '#9b3ae3', // purple
+  '#3b7d30', // green
+  '#ee6c00', // orange
   '#0f93bb', // teal
-  '#1d77ff', // blue
+  '#1c77ff', // blue
   '#d9534f', // red
 ];
 export const ORG_COLOR = '#8792a8'; // neutral for the org root
@@ -44,9 +45,13 @@ function assetListNode(assets: TreeChartDataModel[]): TreeNode {
     name: asset.name,
     version: asset.version,
   }));
-  const height = Math.min(
-    items.length * ASSET_ROW_HEIGHT + ASSET_LIST_PADDING,
-    MAX_ASSET_LIST_HEIGHT,
+  const contentHeight =
+    items.length * ASSET_ROW_HEIGHT +
+    Math.max(0, items.length - 1) * ASSET_ROW_GAP +
+    ASSET_LIST_CHROME;
+  const height = Math.max(
+    BASE_CARD_HEIGHT,
+    Math.min(contentHeight, MAX_ASSET_LIST_HEIGHT),
   );
   return {
     name: `Assets (${items.length})`,
